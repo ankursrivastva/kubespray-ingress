@@ -1,0 +1,17 @@
+---
+- hosts: node2
+  remote_user: root
+  become: yes
+  tasks:
+          #- name: example copying apple file to remote location
+    #copy:
+            #src: ./helm-ingress/
+      #dest: /tmp/
+      # - name: download helm file
+      #command: cd /tmp
+  - name: install ingress files
+    command: git clone https://github.com/nginxinc/kubernetes-ingress/
+  - name: verify helm
+    command: chdir=/root/kubernetes-ingress/deployments/helm-chart ls
+  - name: install helm
+    command: helm install --name my-release /root/kubernetes-ingress/deployments/helm-chart

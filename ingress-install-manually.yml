@@ -1,0 +1,28 @@
+---
+- hosts: node2
+  remote_user: root
+  become: yes
+  tasks:
+  - name: create mandatory resource for ingress cluster
+    command: /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
+  - name: create ingress add on
+    command: /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
+  - name: example copying apple file to remote location
+    copy:
+      src: /home/ubuntu/kubespray/apple.yaml
+      dest: /root/apple.yaml
+  - name: example copying banana file to remote location
+    copy:
+      src: /home/ubuntu/kubespray/banana.yaml
+      dest: /root/banana.yaml
+  - name: example copying ingress file to remote location
+    copy:
+      src: /home/ubuntu/kubespray/ingress.yaml
+      dest: /root/ingress.yaml
+  - name: create apple service and pod
+    command: /usr/local/bin/kubectl apply -f apple.yaml
+  - name: creating banana service and pod
+    command: /usr/local/bin/kubectl apply -f banana.yaml
+  - name: creating ingress service
+    command: /usr/local/bin/kubectl apply -f ingress.yaml
+    

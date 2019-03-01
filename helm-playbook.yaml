@@ -1,0 +1,23 @@
+---
+- hosts: node2
+  remote_user: root
+  become: yes
+  tasks:
+  - name: example copying apple file to remote location
+    copy:
+      src: ./test/install-helm.sh        
+      dest: /tmp/install-helm.sh
+      # - name: download helm file
+      #command: cd /tmp
+  - name: give permission
+    command: chmod u+x /tmp/install-helm.sh
+  - name: install helm 
+    command: /tmp/install-helm.sh
+  - name: setting up service account
+    command: /usr/local/bin/kubectl --namespace kube-system create serviceaccount tiller
+  - name: Give the ServiceAccount full permissions to manage the cluster
+    command: /usr/local/bin/kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+  - name: Initialize helm and tiller
+    command: helm init --service-account tiller --wait
+  - name: verify helm
+    command: helm version
